@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AQUATECH</title>
+    <title>Customer Orders - AQUATECH</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -26,52 +26,34 @@
     </div>
 
     <script>
-        function loadOrders() {
-          const orders = JSON.parse(localStorage.getItem('orders')) || [];
-          const ordersContainer = document.getElementById('ordersContainer');
-      
-          ordersContainer.innerHTML = '';
-      
-          orders.forEach((order) => {
+      function loadOrderHistory() {
+        const orders = JSON.parse(localStorage.getItem('orders')) || [];
+        const historyContainer = document.getElementById('orderHistory');
+        
+        if (orders.length === 0) {
+          historyContainer.innerHTML = `<p class="text-center">You have no past orders.</p>`;
+        } else {
+          orders.forEach(order => {
             const orderElement = document.createElement('div');
             orderElement.classList.add('col-12', 'd-flex', 'align-items-center', 'bg-white', 'p-3', 'rounded', 'shadow-sm');
-      
+
             orderElement.innerHTML = `
               <div class="ms-3 flex-grow-1">
                 <h6 class="mb-1">${order.product}</h6>
+                <p class="text-muted mb-1">Price: ${order.price}</p>
                 <p class="text-muted mb-1">Status: ${order.status}</p>
-                <p>${order.name}</p>
+                <p>Name: ${order.name}</p>
+                <p>Address: ${order.address}</p>
+                <p>Payment Method: ${order.paymentMethod}</p>
               </div>
-              <button class="btn btn-success" onclick="updateStatus('${order.product}')">Mark as Delivered</button>
             `;
-      
-            ordersContainer.appendChild(orderElement);
+            historyContainer.appendChild(orderElement);
           });
         }
-      
-        function updateStatus(product) {
-          const orders = JSON.parse(localStorage.getItem('orders')) || [];
-          const orderIndex = orders.findIndex((order) => order.product === product);
-      
-          if (orderIndex > -1) {
-        
-            const deliveredOrder = orders.splice(orderIndex, 1)[0];  
-      
-            
-            const customerOrders = JSON.parse(localStorage.getItem('customerOrders')) || [];
-            
-            customerOrders.push(deliveredOrder);
-            
-            localStorage.setItem('customerOrders', JSON.stringify(customerOrders));
-            localStorage.setItem('orders', JSON.stringify(orders));  
-      
-            loadOrders();  
-          }
-        }
-      
-        loadOrders(); 
-      </script>
-      
+      }
+
+      window.onload = loadOrderHistory;  
+    </script>
 
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
